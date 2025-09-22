@@ -1,5 +1,17 @@
 import SwiftUI
 
+struct LazyView<Content: View>: View {
+    let build: () -> Content
+
+    init(@ViewBuilder build: @escaping () -> Content) {
+        self.build = build
+    }
+
+    var body: some View {
+        build()
+    }
+}
+
 struct ContentTabView: View {
     var body: some View {
         List {
@@ -13,7 +25,9 @@ struct ContentTabView: View {
 
             Section("Media") {
                 NavigationLink("Photos Picker") { PhotosPickerDemoView().hidesTabBarOnPush() }
-                NavigationLink("Image & AsyncImage") { ImageAsyncImageDemoView().hidesTabBarOnPush() }
+                NavigationLink("Image & AsyncImage") {
+                    LazyView { ImageAsyncImageDemoView().hidesTabBarOnPush() }
+                }
                 NavigationLink("VideoPlayer") { VideoPlayerDemoView().hidesTabBarOnPush() }
                 NavigationLink("SF Symbols") { SFSymbolsDemoView().hidesTabBarOnPush() }
             }

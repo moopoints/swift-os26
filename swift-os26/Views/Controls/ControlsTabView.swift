@@ -17,6 +17,13 @@ struct ControlsTabView: View {
                 NavigationLink("Date Picker") { DatePickerDemoView().hidesTabBarOnPush() }
                 NavigationLink("Color Picker") { ColorPickerDemoView().hidesTabBarOnPush() }
             }
+
+            Section("Text & Input") {
+                NavigationLink("Text Fields") { TextFieldsDemoView().hidesTabBarOnPush() }
+                NavigationLink("Secure Fields") { SecureFieldsDemoView().hidesTabBarOnPush() }
+                NavigationLink("Text Editor") { TextEditorDemoView().hidesTabBarOnPush() }
+                NavigationLink("Search") { SearchDemoView().hidesTabBarOnPush() }
+            }
         }
     }
 }
