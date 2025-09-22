@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct MenusTabView: View {
+struct NavsTabView: View {
     var body: some View {
         List {
             Section("Menus & Toolbars") {

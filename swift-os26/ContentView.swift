@@ -19,7 +19,7 @@ struct ContentView: View {
             }
 
             NavigationStack {
-                MenusTabView()
+                NavsTabView()
                     .navigationTitle("Menus")
             }
             .tabItem {

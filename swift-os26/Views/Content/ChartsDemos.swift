@@ -506,7 +506,6 @@ struct BoxPlotCustomView: View {
 
                 // Median line
                 RuleMark(
-                    x: .value("Series", s.name),
                     y: .value("Median", q.median)
                 )
                 .foregroundStyle(.blue)
