@@ -4,9 +4,8 @@ struct MenusTabView: View {
     var body: some View {
         List {
             Section("Menus & Toolbars") {
-                NavigationLink("Menus") { MenusDemoView().hidesTabBarOnPush() }
-                NavigationLink("Context Menus") { ContextMenusDemoView().hidesTabBarOnPush() }
                 NavigationLink("Toolbars") { ToolbarsDemoView().hidesTabBarOnPush() }
+                NavigationLink("Toolbars (Glass)") { ToolbarsGlassDemoView().hidesTabBarOnPush() }
                 NavigationLink("Toolbar Title Menu") { ToolbarTitleMenuDemoView().hidesTabBarOnPush() }
             }
 

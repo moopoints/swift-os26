@@ -335,3 +335,59 @@ struct SteppersDemoView: View {
 
 
 
+struct MenusDemoView: View {
+    @State private var selection: String = ""
+
+    var body: some View {
+        List {
+            Section("Basic Menu") {
+                Menu("Actions") {
+                    Button("New", systemImage: "plus") { selection = "New" }
+                    Button("Duplicate", systemImage: "doc.on.doc") { selection = "Duplicate" }
+                    Divider()
+                    Button(role: .destructive) {
+                        selection = "Delete"
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
+                Text("Selected: \(selection)")
+            }
+
+            Section("Nested Menu") {
+                Menu("Share") {
+                    Button("Mail", systemImage: "envelope") { selection = "Mail" }
+                    Button("Messages", systemImage: "message") { selection = "Messages" }
+                    Menu("More") {
+                        Button("Copy Link", systemImage: "link") { selection = "Copy Link" }
+                        Button("Save", systemImage: "square.and.arrow.down") { selection = "Save" }
+                    }
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct ContextMenusDemoView: View {
+    @State private var status: String = ""
+
+    var body: some View {
+        List {
+            Section("Context Menu on Row") {
+                Text("Long-press me")
+                    .contextMenu {
+                        Button("Favorite", systemImage: "star") { status = "Favorited" }
+                        Button("Rename", systemImage: "pencil") { status = "Rename" }
+                        Button(role: .destructive) {
+                            status = "Deleted"
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                Text("Status: \(status)")
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}

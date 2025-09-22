@@ -12,6 +12,11 @@ struct ControlsTabView: View {
                 NavigationLink("Steppers") { SteppersDemoView().hidesTabBarOnPush() }
             }
 
+            Section("Menus") {
+                NavigationLink("Menus") { MenusDemoView().hidesTabBarOnPush() }
+                NavigationLink("Context Menus") { ContextMenusDemoView().hidesTabBarOnPush() }
+            }
+
             Section("Selection & Pickers") {
                 NavigationLink("Picker Styles") { PickerStylesDemoView().hidesTabBarOnPush() }
                 NavigationLink("Date Picker") { DatePickerDemoView().hidesTabBarOnPush() }
