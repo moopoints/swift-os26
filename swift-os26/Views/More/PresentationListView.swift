@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PresentationListView: View {
     @State private var showSheet: Bool = false
+    @State private var selectedDetent: PresentationDetent = .medium
     @State private var showFullCover: Bool = false
     @State private var showAlert: Bool = false
     @State private var showDialog: Bool = false
@@ -10,7 +11,18 @@ struct PresentationListView: View {
     var body: some View {
         List {
             Section("Sheet with Detents") {
-                Button("Present Sheet") { showSheet = true }
+                Button("Present Small") {
+                    selectedDetent = .fraction(0.25)
+                    showSheet = true
+                }
+                Button("Present Medium") {
+                    selectedDetent = .medium
+                    showSheet = true
+                }
+                Button("Present Large") {
+                    selectedDetent = .large
+                    showSheet = true
+                }
             }
             Section("Full-Screen Cover") {
                 Button("Present Full-Screen Cover") { showFullCover = true }
@@ -23,6 +35,17 @@ struct PresentationListView: View {
             }
             Section("Popover") {
                 Button("Show Popover") { showPopover = true }
+                    .popover(isPresented: $showPopover, attachmentAnchor: .rect(.bounds), arrowEdge: .top) {
+                        VStack(spacing: 12) {
+                            Text("Popover content")
+                                .font(.headline)
+                            Text("Tap outside to dismiss")
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        .frame(width: 260)
+                    }
+                    .presentationCompactAdaptation(.popover)
             }
         }
         .sheet(isPresented: $showSheet) {
@@ -40,7 +63,7 @@ struct PresentationListView: View {
                     }
                 }
             }
-            .presentationDetents([.medium, .large])
+            .presentationDetents([.fraction(0.25), .medium, .large], selection: $selectedDetent)
             .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $showFullCover) {
@@ -69,16 +92,6 @@ struct PresentationListView: View {
             Button("Duplicate") {}
             Button("Move") {}
             Button("Delete", role: .destructive) {}
-        }
-        .popover(isPresented: $showPopover) {
-            VStack(spacing: 12) {
-                Text("Popover content")
-                    .font(.headline)
-                Text("Tap outside to dismiss")
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-            .frame(width: 260)
         }
     }
 }
