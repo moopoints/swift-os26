@@ -61,3 +61,30 @@ struct FloatingSearchOverlayDemoView: View {
 }
 
 
+// MARK: - iOS 26 style Tab Bar with floating Search tab
+struct TabViewWithSearchRoleDemoView: View {
+    @State private var search: String = ""
+
+    var body: some View {
+        TabView {
+            Tab("One", systemImage: "1.circle") {
+                Text("One")
+            }
+            Tab("Two", systemImage: "2.circle") {
+                Text("Two")
+            }
+            // Tab("Three", systemImage: "3.circle") {
+            //     Text("Three")
+            // }
+            Tab("Four", systemImage: "4.circle", role: .search) {
+                NavigationStack {
+                    Text("Search")
+                }
+            }
+        }
+        .searchable(text: $search)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+

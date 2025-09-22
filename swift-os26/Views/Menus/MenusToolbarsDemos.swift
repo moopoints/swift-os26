@@ -102,7 +102,6 @@ struct ToolbarsGlassDetailView: View {
                 Text("Detail for item #\(value)")
             }
         }
-        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

@@ -33,14 +33,6 @@ struct ContentView: View {
             .tabItem {
                 Label("Content", systemImage: "doc.text.image")
             }
-
-            NavigationStack {
-                MoreTabView()
-                    .navigationTitle("More")
-            }
-            .tabItem {
-                Label("More", systemImage: "ellipsis")
-            }
         }
     }
 }
