@@ -58,8 +58,20 @@ struct PresentationListView: View {
                 }
                 .padding()
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: { showSheet = false }) {
+                            Image(systemName: "xmark")
+                        }
+                        .buttonBorderShape(.circle)
+                    }
+                    ToolbarItem(placement: .principal) {
+                        Text("Sheet demo")
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") { showSheet = false }
+                        Button(action: {}) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .buttonBorderShape(.circle)
                     }
                 }
             }
