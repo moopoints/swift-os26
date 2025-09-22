@@ -73,10 +73,7 @@ struct TabViewWithSearchRoleDemoView: View {
             Tab("Two", systemImage: "2.circle") {
                 Text("Two")
             }
-            // Tab("Three", systemImage: "3.circle") {
-            //     Text("Three")
-            // }
-            Tab("Four", systemImage: "4.circle", role: .search) {
+            Tab("Search", systemImage: "3.circle", role: .search) {
                 NavigationStack {
                     Text("Search")
                 }
