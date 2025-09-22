@@ -14,6 +14,7 @@ struct NavsTabView: View {
                 NavigationLink("NavigationSplitView") { NavigationSplitViewDemo().hidesTabBarOnPush() }
                 NavigationLink("TabView Styles") { TabViewStylesDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView with Search") { TabViewWithSearchRoleDemoView().hidesTabBarOnPush() }
+                NavigationLink("TabView with Activity") { TabViewWithActivityDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView (UIKit Bridge)") { UIKitBridgeTabViewDemo().hidesTabBarOnPush() }
                 NavigationLink("Floating Search Overlay") { FloatingSearchOverlayDemoView().hidesTabBarOnPush() }
             }

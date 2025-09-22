@@ -2,6 +2,9 @@ import SwiftUI
 
 struct ButtonsDemoView: View {
     @State private var tappedCount: Int = 0
+    @State private var isEditingInlineField: Bool = false
+    @State private var inlineText: String = ""
+    @FocusState private var inlineFieldFocused: Bool
 
     var body: some View {
         List {
@@ -216,6 +219,74 @@ struct ButtonsDemoView: View {
             }
 
             // Removed custom glass styles to keep only native elements
+
+            Section("Custom NavBar replica (PDF + tint)") {
+                HStack(spacing: 12) {
+                    Button(action: handleTap) {
+                        Image("icon-plus")
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                    }
+                    .buttonBorderShape(.circle)
+                    .controlSize(.large)
+                    .tint(.primary)
+                    .buttonStyle(GlassButtonStyle())
+
+                    Button(action: handleTap) {
+                        Image("icon-sort")
+                            .renderingMode(.template)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 20, height: 20)
+                    }
+                    .buttonBorderShape(.circle)
+                    .controlSize(.large)
+                    .tint(.primary)
+                    .buttonStyle(GlassButtonStyle())
+                }
+            }
+
+            Section("Button → TextField transform") {
+                ZStack(alignment: .leading) {
+                    if isEditingInlineField {
+                        HStack(spacing: 8) {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.secondary)
+                            TextField("Type to search…", text: $inlineText)
+                                .textInputAutocapitalization(.none)
+                                .autocorrectionDisabled(true)
+                                .focused($inlineFieldFocused)
+                            Button(action: { withAnimation(.spring(response: 0.35, dampingFraction: 0.9)) { isEditingInlineField = false; inlineText = ""; inlineFieldFocused = false } }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(.thinMaterial)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .strokeBorder(Color.white.opacity(0.2))
+                        )
+                        .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .scale.combined(with: .opacity)))
+                        .onAppear {
+                            inlineFieldFocused = true
+                        }
+                    } else {
+                        Button(action: { withAnimation(.spring(response: 0.35, dampingFraction: 0.9)) { isEditingInlineField = true } }) {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+                        .buttonStyle(GlassButtonStyle())
+                        .transition(.opacity)
+                    }
+                }
+            }
 
             Section("Tap Count") {
                 Text("Tapped: \(tappedCount)")

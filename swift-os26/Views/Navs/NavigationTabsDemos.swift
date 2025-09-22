@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct NavigationStackDemoView: View {
     var body: some View {
@@ -80,6 +81,59 @@ struct TabViewWithSearchRoleDemoView: View {
             }
         }
         .searchable(text: $search)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+
+// MARK: - TabView with Activity and conditional Search tab
+struct TabViewWithActivityDemoView: View {
+    @State private var showSearchTab: Bool = false
+    @State private var search: String = ""
+    @State private var secondsElapsed: Int = 0
+    private let timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        ZStack {
+            TabView {
+                Tab("One", systemImage: "1.circle") {
+                    Text("One")
+                }
+                Tab("Two", systemImage: "2.circle") {
+                    Text("Two")
+                }
+                Tab("Activity", systemImage: "3.circle") {
+                    VStack(spacing: 12) {
+                        Text("Activity")
+                        Text("\(secondsElapsed)s")
+                            .monospacedDigit()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onReceive(timer) { (_: Date) in
+                        secondsElapsed += 1
+                    }
+                }
+                if showSearchTab {
+                    Tab("Search", systemImage: "4.circle", role: .search) {
+                        NavigationStack {
+                            Text("Search")
+                        }
+                        .searchable(text: $search)
+                    }
+                }
+            }
+            
+
+            Button {
+                showSearchTab.toggle()
+            } label: {
+                Label(showSearchTab ? "Hide Search" : "Show Search", systemImage: "magnifyingglass")
+                    .font(.system(size: 16, weight: .semibold))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(.thinMaterial, in: Capsule())
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
     }
 }
