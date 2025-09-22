@@ -26,6 +26,10 @@ struct ContentTabView: View {
                 NavigationLink("matchedGeometryEffect") { MatchedGeometryDemoView().hidesTabBarOnPush() }
                 NavigationLink("Sensory Feedback") { SensoryFeedbackDemoView().hidesTabBarOnPush() }
             }
+
+            Section("Charts") {
+                NavigationLink("Charts") { ChartsDemoListView().hidesTabBarOnPush() }
+            }
         }
     }
 }
