@@ -12,9 +12,11 @@ struct NavsTabView: View {
             Section("Navigation & Tabs") {
                 NavigationLink("NavigationStack") { NavigationStackDemoView().hidesTabBarOnPush() }
                 NavigationLink("NavigationSplitView") { NavigationSplitViewDemo().hidesTabBarOnPush() }
-                NavigationLink("TabView Styles") { TabViewStylesDemoView().hidesTabBarOnPush() }
+                NavigationLink("TabView") { TabViewStylesDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView with Search") { TabViewWithSearchRoleDemoView().hidesTabBarOnPush() }
+                NavigationLink("TabView with Start button") { TabViewWithStartButtonDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView with Activity") { TabViewWithActivityDemoView().hidesTabBarOnPush() }
+                NavigationLink("TabView with Custom TabBar") { TabViewWithActivityDemoView2().hidesTabBarOnPush() }
                 NavigationLink("TabView (UIKit Bridge)") { UIKitBridgeTabViewDemo().hidesTabBarOnPush() }
                 NavigationLink("Floating Search Overlay") { FloatingSearchOverlayDemoView().hidesTabBarOnPush() }
             }
