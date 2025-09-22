@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                ControlsListView()
+                ControlsTabView()
                     .navigationTitle("Controls")
             }
             .tabItem {
@@ -19,59 +19,27 @@ struct ContentView: View {
             }
 
             NavigationStack {
-                SelectionPickersListView()
-                    .navigationTitle("Selection & Pickers")
-            }
-            .tabItem {
-                Label("Selection", systemImage: "checkmark.circle")
-            }
-
-            NavigationStack {
-                MenusToolbarsListView()
-                    .navigationTitle("Menus & Toolbars")
+                MenusTabView()
+                    .navigationTitle("Menus")
             }
             .tabItem {
                 Label("Menus", systemImage: "ellipsis.circle")
             }
 
             NavigationStack {
-                ListsGridsListView()
-                    .navigationTitle("Lists & Grids")
+                ContentTabView()
+                    .navigationTitle("Content")
             }
             .tabItem {
-                Label("Lists", systemImage: "list.bullet")
+                Label("Content", systemImage: "doc.text.image")
             }
 
             NavigationStack {
-                NavigationTabsListView()
-                    .navigationTitle("Navigation & Tabs")
+                MoreTabView()
+                    .navigationTitle("More")
             }
             .tabItem {
-                Label("Nav & Tabs", systemImage: "square.grid.2x2")
-            }
-
-            NavigationStack {
-                PresentationListView()
-                    .navigationTitle("Presentation")
-            }
-            .tabItem {
-                Label("Presentation", systemImage: "rectangle.stack")
-            }
-
-            NavigationStack {
-                MediaListView()
-                    .navigationTitle("Media")
-            }
-            .tabItem {
-                Label("Media", systemImage: "photo")
-            }
-
-            NavigationStack {
-                LayoutEffectsListView()
-                    .navigationTitle("Layout & Effects")
-            }
-            .tabItem {
-                Label("Layout", systemImage: "sparkles")
+                Label("More", systemImage: "ellipsis")
             }
         }
     }

@@ -21,11 +21,10 @@ struct PhotosPickerDemoView: View {
             }
         }
         .task(id: selectedItem) {
-            if let item: PhotosPickerItem = selectedItem {
-                if let data: Data = try? await item.loadTransferable(type: Data.self),
-                   let uiImage: UIImage = UIImage(data: data) {
-                    image = Image(uiImage: uiImage)
-                }
+            if let item: PhotosPickerItem = selectedItem,
+               let data: Data = try? await item.loadTransferable(type: Data.self),
+               let uiImage: UIImage = UIImage(data: data) {
+                image = Image(uiImage: uiImage)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -69,8 +68,10 @@ struct ImageAsyncImageDemoView: View {
 
 struct VideoPlayerDemoView: View {
     private var player: AVPlayer {
-        let url: URL? = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8")
-        return AVPlayer(url: url!)
+        guard let url: URL = URL(string: "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8") else {
+            return AVPlayer()
+        }
+        return AVPlayer(url: url)
     }
 
     var body: some View {
