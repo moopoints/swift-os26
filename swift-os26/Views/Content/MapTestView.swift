@@ -1,6 +1,7 @@
 import SwiftUI
 import MapKit
 import CoreLocation
+import Combine
 
 struct MapTestView: View {
     @StateObject private var locationManager: ExampleLocationManager = ExampleLocationManager()
@@ -18,39 +19,7 @@ struct MapTestView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Simple inline nav bar replacement
-            HStack(spacing: 12) {
-                Button("Back") {}
-                    .font(.headline)
-                Spacer()
-                Text("Map View")
-                    .font(.headline)
-                Spacer()
-                Color.clear.frame(width: 44, height: 1)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 12)
-
-            // Manual control buttons
-            HStack {
-                Button(action: { followUser(withHeading: false) }) {
-                    Image(systemName: "location")
-                        .padding(8)
-                }
-                Button(action: { followUser(withHeading: true) }) {
-                    Image(systemName: "location.north.fill")
-                        .padding(8)
-                }
-                Button(action: setDefaultZoom) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(8)
-                }
-                Button(action: zoomAndTransition) {
-                    Image(systemName: "arrow.down.forward.and.arrow.up.backward.circle")
-                        .padding(8)
-                }
-            }
-            .padding()
+            // Using native navigation bar
 
             Map(
                 position: $cameraPosition,
@@ -59,12 +28,10 @@ struct MapTestView: View {
             ) {
                 UserAnnotation()
             }
+            .ignoresSafeArea(edges: [.bottom])
             .mapControls {
-                MapScaleView()
                 MapUserLocationButton()
-                if cameraPosition.positionedByUser {
-                    MapCompass()
-                }
+                MapCompass()
             }
             .mapStyle(.standard(
                 elevation: .flat,
@@ -81,14 +48,33 @@ struct MapTestView: View {
                 }
             }
         }
-        .navigationBarHidden(true)
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.regularMaterial, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button(action: { followUser(withHeading: false) }) {
+                    Image(systemName: "location")
+                }
+                Button(action: { followUser(withHeading: true) }) {
+                    Image(systemName: "location.north.fill")
+                }
+                Button(action: setDefaultZoom) {
+                    Image(systemName: "arrow.up.left.and.arrow.down.right")
+                }
+                Button(action: zoomAndTransition) {
+                    Image(systemName: "arrow.down.forward.and.arrow.up.backward.circle")
+                }
+            }
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .bottomLeading) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Distance from ground: \(Int(currentDistance))m")
                     .font(.footnote)
                     .foregroundColor(.white)
-                Text("Following with heading: \(isFollowingWithHeading ? \"On\" : \"Off\")")
+                Text("Following with heading: \(isFollowingWithHeading ? "On" : "Off")")
                     .font(.footnote)
                     .foregroundColor(.white)
             }

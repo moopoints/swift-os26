@@ -20,10 +20,10 @@ struct ContentView: View {
 
             NavigationStack {
                 NavsTabView()
-                    .navigationTitle("Menus")
+                    .navigationTitle("Navs & Menus")
             }
             .tabItem {
-                Label("Menus", systemImage: "ellipsis.circle")
+                Label("Navs & Menus", systemImage: "ellipsis.circle")
             }
 
             NavigationStack {
