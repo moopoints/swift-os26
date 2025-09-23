@@ -168,7 +168,7 @@ struct TabViewWithActivityDemoView: View {
 
 // MARK: - TabView with Activity and custom glass Tab Bar (left-aligned)
 struct TabViewWithActivityDemoView2: View {
-    @State private var selectedIndex: Int = 0
+    @State private var selectedTab: CustomTab = .activities
     @State private var isTimerRunning: Bool = false
     @State private var secondsElapsed: Int = 0
     @State private var showFullCover: Bool = false
@@ -184,55 +184,34 @@ struct TabViewWithActivityDemoView2: View {
     var body: some View {
         ZStack {
             Group {
-                switch selectedIndex {
-                case 0:
+                switch selectedTab {
+                case .activities:
                     Color.red.ignoresSafeArea()
-                case 1:
+                case .routes:
                     Color.green.ignoresSafeArea()
-                case 2:
+                case .workouts:
                     Color.blue.ignoresSafeArea()
-                default:
-                    Color.clear.ignoresSafeArea()
                 }
             }
 
-            // Custom glass tab bar (left-aligned, floating near bottom like native)
+            // Custom glass tab bars (left: navigation, right: live activity pill)
             VStack {
                 Spacer()
-                HStack(spacing: 10) {
-                    // Tabs 1-3: icons only
-                    glassTabButton(systemImageName: "1.circle", isSelected: selectedIndex == 0) {
-                        selectedIndex = 0
-                    }
-                    glassTabButton(systemImageName: "2.circle", isSelected: selectedIndex == 1) {
-                        selectedIndex = 1
-                    }
-                    glassTabButton(systemImageName: "3.circle", isSelected: selectedIndex == 2) {
-                        selectedIndex = 2
+                HStack(spacing: 8) {
+                    CustomTabBar(
+                        selectedTab: $selectedTab,
+                        tabs: CustomTab.allCases
+                    )
+                    Spacer()
+                    if isTimerRunning {
+                        LiveActivityTabBar(
+                            timerText: timerDisplay,
+                            height: barHeight,
+                            onTap: { showFullCover = true }
+                        )
                     }
                 }
                 .padding(.horizontal, 16)
-                .frame(height: barHeight)
-                .background(.ultraThinMaterial, in: Capsule())
-                .overlay(
-                    Capsule().strokeBorder(Color.primary.opacity(0.1))
-                )
-                .shadow(color: Color.black.opacity(0.15), radius: 12, y: 4)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 16)
-                .padding(.bottom, 20)
-            }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if isTimerRunning {
-                Button(action: { showFullCover = true }) {
-                    Text(timerDisplay)
-                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                }
-                .buttonBorderShape(.capsule)
-                .frame(height: barHeight)
-                .buttonStyle(GlassButtonStyle())
-                .padding(.trailing, 16)
                 .padding(.bottom, 20)
             }
         }
@@ -274,23 +253,113 @@ struct TabViewWithActivityDemoView2: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // MARK: - Subviews
-    private func glassTabButton(systemImageName: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemImageName)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(isSelected ? .primary : .secondary)
-                .padding(10)
-                .overlay(
-                    Circle().strokeBorder((isSelected ? Color.primary.opacity(0.15) : Color.primary.opacity(0.08)))
-                )
-        }
-        .buttonStyle(.plain)
-        .shadow(radius: isSelected ? 4 : 2, y: 2)
-    }
 }
 
 
+
+// MARK: - Custom Tab Bar Components (local, asset-based)
+
+enum CustomTab: CaseIterable, Hashable {
+    case activities, routes, workouts
+
+    func iconName(isSelected: Bool) -> String {
+        switch self {
+        case .activities: return isSelected ? "tab-activities-filled" : "tab-activities"
+        case .routes: return isSelected ? "tab-routes-filled" : "tab-routes"
+        case .workouts: return isSelected ? "tab-workouts-filled" : "tab-workouts"
+        }
+    }
+}
+
+struct CustomTabBar: View {
+    @Binding var selectedTab: CustomTab
+    var tabs: [CustomTab]
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(tabs, id: \.self) { tab in
+                TabButton(
+                    tab: tab,
+                    isSelected: selectedTab == tab,
+                    onTap: { selectedTab = tab }
+                )
+            }
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .stroke(Color.primary.opacity(0.08))
+        )
+        .shadow(color: Color.black.opacity(0.15), radius: 12, y: 4)
+    }
+}
+
+struct TabButton: View {
+    let tab: CustomTab
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: {
+            let impactFeedback: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
+            onTap()
+        }) {
+            Image(tab.iconName(isSelected: isSelected))
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 24, height: 24)
+                .foregroundStyle(isSelected ? Color.accentColor : Color.primary)
+        }
+        .frame(width: 60, height: 60)
+        .background(isSelected ? Color.primary.opacity(0.06) : Color.clear)
+        .cornerRadius(30)
+    }
+}
+
+// Second, separate tab bar for live activity timer (shows only when running)
+struct LiveActivityTabBar: View {
+    let timerText: String
+    let height: CGFloat
+    let onTap: () -> Void
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Button(action: {
+                let impactFeedback: UIImpactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+                impactFeedback.impactOccurred()
+                onTap()
+            }) {
+                Text(timerText)
+                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color.primary)
+                    .padding(.horizontal, 14)
+                    .frame(height: height)
+                    .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .background(
+                Capsule().fill(Color.primary.opacity(0.06))
+            )
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .stroke(Color.primary.opacity(0.08))
+        )
+        .shadow(color: Color.black.opacity(0.15), radius: 12, y: 4)
+    }
+}
 
 // MARK: - TabView with Start button (always-on Search tab, start icon, yellow bg on timer)
 struct TabViewWithStartButtonDemoView: View {
