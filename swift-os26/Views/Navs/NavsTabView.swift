@@ -16,7 +16,7 @@ struct NavsTabView: View {
                 NavigationLink("TabView with Search") { TabViewWithSearchRoleDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView with Start button") { TabViewWithStartButtonDemoView().hidesTabBarOnPush() }
                 NavigationLink("TabView with Activity") { TabViewWithActivityDemoView().hidesTabBarOnPush() }
-                NavigationLink("TabView with Custom TabBar") { TabViewWithActivityDemoView2().hidesTabBarOnPush() }
+                NavigationLink("TabView with Custom TabBar") { TabViewWithCustomTabBar().hidesTabBarOnPush() }
                 NavigationLink("TabView (UIKit Bridge)") { UIKitBridgeTabViewDemo().hidesTabBarOnPush() }
                 NavigationLink("Floating Search Overlay") { FloatingSearchOverlayDemoView().hidesTabBarOnPush() }
             }

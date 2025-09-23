@@ -167,13 +167,15 @@ struct TabViewWithActivityDemoView: View {
 
 
 // MARK: - TabView with Activity and custom glass Tab Bar (left-aligned)
-struct TabViewWithActivityDemoView2: View {
+struct TabViewWithCustomTabBar: View {
     @State private var selectedTab: CustomTab = .activities
     @State private var isTimerRunning: Bool = false
     @State private var secondsElapsed: Int = 0
     @State private var showFullCover: Bool = false
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher> = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
-    private let barHeight: CGFloat = 48
+    private let barHeight: CGFloat = 60
+    private let barEdgePadding: CGFloat = 16
+    private let tabItemWidth: CGFloat = 80
 
     private var timerDisplay: String {
         let minutes: Int = secondsElapsed / 60
@@ -200,7 +202,9 @@ struct TabViewWithActivityDemoView2: View {
                 HStack(spacing: 8) {
                     CustomTabBar(
                         selectedTab: $selectedTab,
-                        tabs: CustomTab.allCases
+                        tabs: CustomTab.allCases,
+                        itemHeight: barHeight,
+                        itemWidth: tabItemWidth
                     )
                     Spacer()
                     if isTimerRunning {
@@ -211,10 +215,11 @@ struct TabViewWithActivityDemoView2: View {
                         )
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 20)
+                .padding(.horizontal, barEdgePadding)
+                .padding(.bottom, barEdgePadding)
             }
         }
+        .ignoresSafeArea(edges: .bottom)
         .overlay(alignment: .center) {
             // Start/Stop timer control centered (same UX as before)
             Button(action: {
@@ -264,7 +269,7 @@ enum CustomTab: CaseIterable, Hashable {
 
     func iconName(isSelected: Bool) -> String {
         switch self {
-        case .activities: return isSelected ? "tab-activities-filled" : "tab-activities"
+        case .activities: return isSelected ? "tab-activity-filled" : "tab-activity"
         case .routes: return isSelected ? "tab-routes-filled" : "tab-routes"
         case .workouts: return isSelected ? "tab-workouts-filled" : "tab-workouts"
         }
@@ -274,6 +279,8 @@ enum CustomTab: CaseIterable, Hashable {
 struct CustomTabBar: View {
     @Binding var selectedTab: CustomTab
     var tabs: [CustomTab]
+    var itemHeight: CGFloat = 60
+    var itemWidth: CGFloat = 80
 
     var body: some View {
         HStack(spacing: 4) {
@@ -281,6 +288,8 @@ struct CustomTabBar: View {
                 TabButton(
                     tab: tab,
                     isSelected: selectedTab == tab,
+                    itemHeight: itemHeight,
+                    itemWidth: itemWidth,
                     onTap: { selectedTab = tab }
                 )
             }
@@ -302,6 +311,8 @@ struct CustomTabBar: View {
 struct TabButton: View {
     let tab: CustomTab
     let isSelected: Bool
+    let itemHeight: CGFloat
+    let itemWidth: CGFloat
     let onTap: () -> Void
 
     var body: some View {
@@ -316,9 +327,11 @@ struct TabButton: View {
                 .frame(width: 24, height: 24)
                 .foregroundStyle(isSelected ? Color.accentColor : Color.primary)
         }
-        .frame(width: 60, height: 60)
-        .background(isSelected ? Color.primary.opacity(0.06) : Color.clear)
-        .cornerRadius(30)
+        .frame(width: itemWidth, height: itemHeight)
+        .background(
+            isSelected ? AnyShapeStyle(.thinMaterial) : AnyShapeStyle(Color.clear),
+            in: RoundedRectangle(cornerRadius: itemHeight / 2.0, style: .continuous)
+        )
     }
 }
 
@@ -338,13 +351,16 @@ struct LiveActivityTabBar: View {
                 Text(timerText)
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
                     .foregroundStyle(Color.primary)
-                    .padding(.horizontal, 14)
-                    .frame(height: height)
+                    .frame(width: 80, height: height)
                     .contentShape(Capsule())
             }
             .buttonStyle(.plain)
             .background(
-                Capsule().fill(Color.primary.opacity(0.06))
+                Capsule()
+                    .fill(.thinMaterial)
+                    .background(
+                        Capsule().fill(Color.yellow.opacity(0.25))
+                    )
             )
         }
         .padding(8)
@@ -361,33 +377,49 @@ struct LiveActivityTabBar: View {
     }
 }
 
-// MARK: - TabView with Start button (always-on Search tab, start icon, yellow bg on timer)
+// MARK: - TabView with Start button (always-on Search tab)
+/// Demo notes:
+/// - The trailing start button uses `Tab(role: .search)` so it sits in the accessory zone.
+/// - UIKit's tab bar normalizes per-item views; most label styling is ignored (tint/foreground,
+///   backgrounds, overlays, shadows, and symbol/implicit animations). Content changes do reflect
+///   (e.g. switching symbol name/variant or showing text like a timer/LIVE).
+/// - We intercept selection via `TabView(selection:)` so this start button never remains selected;
+///   after tapping (sheet opens), selection reverts to the last real tab (1 or 2).
 struct TabViewWithStartButtonDemoView: View {
     @State private var isTimerRunning: Bool = false
     @State private var secondsElapsed: Int = 0
     @State private var showFullCover: Bool = false
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher> = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+    @State private var selectedTab: Int = 1
+    @State private var lastNonStartTab: Int = 1
 
     var body: some View {
         ZStack {
-            TabView {
-                Tab("", systemImage: "1.circle") {
+            TabView(selection: $selectedTab) {
+                Tab("", systemImage: "1.circle", value: 1) {
                     ZStack { Color.clear.ignoresSafeArea() }
                 }
-                Tab("", systemImage: "2.circle") {
+                Tab("", systemImage: "2.circle", value: 2) {
                     ZStack { Color.clear.ignoresSafeArea() }
                 }
-                // Always-on Search role tab with play icon; turns yellow while timer runs
-                Tab(role: .search) {
+                // Always-on trailing start button (search-role) that never stays selected
+                // Styling note: Tab bar ignores most label modifiers (tint/foreground, backgrounds,
+                // overlays, shadows, runtime animations). Prefer content changes (symbol/text) to
+                // indicate running state.
+                Tab(value: 999, role: .search) {
                     Color.clear
                         .ignoresSafeArea()
-                        .onAppear { showFullCover = true }
                 } label: {
                     Image(systemName: "play.circle")
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(isTimerRunning ? Color.accentColor : Color.primary)
+                        .symbolEffect(.pulse, isActive: isTimerRunning)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(isTimerRunning ? Color.yellow : Color.clear, in: Capsule())
+                        .overlay(
+                            Capsule()
+                                .stroke(isTimerRunning ? Color.accentColor : Color.clear, lineWidth: isTimerRunning ? 2 : 0)
+                        )
+                        .shadow(color: isTimerRunning ? Color.accentColor.opacity(0.6) : Color.clear, radius: isTimerRunning ? 8 : 0)
                 }
             }
 
@@ -406,6 +438,17 @@ struct TabViewWithStartButtonDemoView: View {
         .onReceive(timer) { (_: Date) in
             if isTimerRunning {
                 secondsElapsed += 1
+            }
+        }
+        .onChange(of: selectedTab) { (newValue: Int) in
+            if newValue == 999 {
+                showFullCover = true
+                // Immediately restore to the last non-start tab so the start button never appears selected
+                DispatchQueue.main.async {
+                    selectedTab = lastNonStartTab
+                }
+            } else {
+                lastNonStartTab = newValue
             }
         }
         .fullScreenCover(isPresented: $showFullCover) {
