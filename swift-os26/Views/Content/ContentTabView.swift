@@ -30,6 +30,10 @@ struct ContentTabView: View {
             Section("Charts") {
                 NavigationLink("Charts") { ChartsDemoListView().hidesTabBarOnPush() }
             }
+            
+            Section("Maps") {
+                NavigationLink("Map Test") { MapTestView().hidesTabBarOnPush() }
+            }
         }
     }
 }
