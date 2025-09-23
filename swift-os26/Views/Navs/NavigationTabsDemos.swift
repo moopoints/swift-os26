@@ -174,7 +174,7 @@ struct TabViewWithCustomTabBar: View {
     @State private var showFullCover: Bool = false
     private let timer: Publishers.Autoconnect<Timer.TimerPublisher> = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     private let barHeight: CGFloat = 60
-    private let barEdgePadding: CGFloat = 16
+    private let barEdgePadding: CGFloat = 28
     private let tabItemWidth: CGFloat = 80
 
     private var timerDisplay: String {
@@ -210,6 +210,7 @@ struct TabViewWithCustomTabBar: View {
                     if isTimerRunning {
                         LiveActivityTabBar(
                             timerText: timerDisplay,
+                            width: tabItemWidth,
                             height: barHeight,
                             onTap: { showFullCover = true }
                         )
@@ -279,8 +280,8 @@ enum CustomTab: CaseIterable, Hashable {
 struct CustomTabBar: View {
     @Binding var selectedTab: CustomTab
     var tabs: [CustomTab]
-    var itemHeight: CGFloat = 60
-    var itemWidth: CGFloat = 80
+    var itemHeight: CGFloat = 48
+    var itemWidth: CGFloat = 64
 
     var body: some View {
         HStack(spacing: 4) {
@@ -297,7 +298,7 @@ struct CustomTabBar: View {
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 40, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(.thinMaterial)
         )
         .contentShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
         .overlay(
@@ -329,7 +330,7 @@ struct TabButton: View {
         }
         .frame(width: itemWidth, height: itemHeight)
         .background(
-            isSelected ? AnyShapeStyle(.thinMaterial) : AnyShapeStyle(Color.clear),
+            isSelected ? AnyShapeStyle(.regularMaterial) : AnyShapeStyle(Color.clear),
             in: RoundedRectangle(cornerRadius: itemHeight / 2.0, style: .continuous)
         )
     }
@@ -338,6 +339,7 @@ struct TabButton: View {
 // Second, separate tab bar for live activity timer (shows only when running)
 struct LiveActivityTabBar: View {
     let timerText: String
+    let width: CGFloat
     let height: CGFloat
     let onTap: () -> Void
 
@@ -351,22 +353,22 @@ struct LiveActivityTabBar: View {
                 Text(timerText)
                     .font(.system(size: 13, weight: .semibold, design: .monospaced))
                     .foregroundStyle(Color.primary)
-                    .frame(width: 80, height: height)
+                    .frame(width: width, height: height)
                     .contentShape(Capsule())
             }
             .buttonStyle(.plain)
             .background(
                 Capsule()
-                    .fill(.thinMaterial)
-                    .background(
-                        Capsule().fill(Color.yellow.opacity(0.25))
+                    .fill(.regularMaterial)
+                    .overlay(
+                        Capsule().fill(Color.yellow.opacity(0.6))
                     )
             )
         }
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 40, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(.thinMaterial)
         )
         .contentShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
         .overlay(
