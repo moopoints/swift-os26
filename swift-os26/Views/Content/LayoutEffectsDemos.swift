@@ -73,11 +73,26 @@ struct BackgroundsMaterialsDemoView: View {
 					Color(red: 218.0/255.0, green: 174.0/255.0, blue: 81.0/255.0)
 				]
 			}
-			return LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing)
+			return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
 		}
 	}
 
 	@State private var selectedStyle: GradientStyle = .bluePurple
+
+	private func demoCard(titleText: String, subtitleText: String, width: CGFloat, height: CGFloat, @ViewBuilder content: () -> some View) -> some View {
+		ZStack(alignment: .topLeading) {
+			content()
+			VStack(alignment: .leading, spacing: 4) {
+				Text(titleText)
+					.font(.headline)
+					.foregroundStyle(Color.black)
+				Text(subtitleText)
+					.font(.subheadline)
+					.foregroundStyle(Color.black)
+			}
+			.padding(12)
+		}
+	}
 
 	var body: some View {
 		ZStack {
@@ -89,16 +104,77 @@ struct BackgroundsMaterialsDemoView: View {
 				let containerHeight: CGFloat = 160.0
 
 				ScrollView {
-					VStack(spacing: 8) {
-						ForEach(0..<10) { _ in
+					VStack(spacing: 12) {
+						// Demo 1: Glass effect, opacity 0.5 (existing)
+						demoCard(titleText: "Demo 1", subtitleText: "Glass effect, opacity 0.5", width: containerWidth, height: containerHeight) {
 							RoundedRectangle(cornerRadius: 20)
-								.frame(width: containerWidth, height: containerHeight)
 								.glassEffect(in: RoundedRectangle(cornerRadius: 20))
 								.opacity(0.5)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 2: Glass effect, opacity 0.25
+						demoCard(titleText: "Demo 2", subtitleText: "Glass effect, opacity 0.25", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.glassEffect(in: RoundedRectangle(cornerRadius: 20))
+								.opacity(0.25)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 3: Glass effect, opacity 0.75
+						demoCard(titleText: "Demo 3", subtitleText: "Glass effect, opacity 0.75", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.glassEffect(in: RoundedRectangle(cornerRadius: 20))
+								.opacity(0.75)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 4: Glass effect, opacity 1.0
+						demoCard(titleText: "Demo 4", subtitleText: "Glass effect, opacity 1.0", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.glassEffect(in: RoundedRectangle(cornerRadius: 20))
+								.opacity(1.0)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 5: Ultra thin material (opacity 1)
+						demoCard(titleText: "Demo 5", subtitleText: "Ultra thin material, opacity 1", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.fill(.ultraThinMaterial)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 6: Thin material (opacity 1)
+						demoCard(titleText: "Demo 6", subtitleText: "Thin material, opacity 1", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.fill(.thinMaterial)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 7: Regular material (opacity 1)
+						demoCard(titleText: "Demo 7", subtitleText: "Regular material, opacity 1", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.fill(.regularMaterial)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 8: Thick material (opacity 1)
+						demoCard(titleText: "Demo 8", subtitleText: "Thick material, opacity 1", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.fill(.thickMaterial)
+								.frame(width: containerWidth, height: containerHeight)
+						}
+
+						// Demo 9: Ultra thick material (opacity 1)
+						demoCard(titleText: "Demo 9", subtitleText: "Ultra thick material, opacity 1", width: containerWidth, height: containerHeight) {
+							RoundedRectangle(cornerRadius: 20)
+								.fill(.ultraThickMaterial)
+								.frame(width: containerWidth, height: containerHeight)
 						}
 					}
 					.frame(maxWidth: .infinity)
 					.padding(.horizontal, 16)
+					.padding(.top, 12)
 					.padding(.bottom, 24)
 				}
 			}
