@@ -84,13 +84,13 @@ struct BackgroundsMaterialsDemoView: View {
 			content()
 			VStack(alignment: .leading, spacing: 4) {
 				Text(titleText)
-					.font(.headline)
+					.font(.title3)
 					.foregroundStyle(Color.black)
 				Text(subtitleText)
-					.font(.subheadline)
+					.font(.body)
 					.foregroundStyle(Color.black)
 			}
-			.padding(12)
+			.padding(20)
 		}
 	}
 
