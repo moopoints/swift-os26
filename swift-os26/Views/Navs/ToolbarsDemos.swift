@@ -95,13 +95,48 @@ struct ToolbarsGlassDemoView: View {
 
 struct ToolbarsGlassDetailView: View {
     let value: Int
+    @State private var isFavorite: Bool = false
+    @State private var rating: Int = 0
 
     var body: some View {
         List {
             Section("Detail") {
                 Text("Detail for item #\(value)")
+                Text("Favorite: \(isFavorite ? "Yes" : "No")")
+                Text("Rating: \(rating)")
             }
         }
+        .toolbarBackground(.regularMaterial, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isFavorite.toggle() }) {
+                    Label("Favorite", systemImage: isFavorite ? "star.fill" : "star")
+                        .labelStyle(.iconOnly)
+                }
+            }
+            ToolbarItemGroup(placement: .bottomBar) {
+                // Left side: rating buttons
+                HStack(spacing: 4) {
+                    ForEach(1...5, id: \.self) { star in
+                        Button(action: { rating = star }) {
+                            Image(systemName: star <= rating ? "star.fill" : "star")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+                
+                Spacer()
+                
+                // Right side action
+                Button(action: { /* action */ }) {
+                    Label("Action", systemImage: "paperplane.fill")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+        }
+        .navigationTitle("Detail #\(value)")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
