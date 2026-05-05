@@ -79,6 +79,147 @@ struct DisclosureOutlineDemoView: View {
     }
 }
 
+struct DisclosureGroupDemoView: View {
+    @State private var showRendering: Bool = true
+    @State private var showInput: Bool = false
+    @State private var showAdvanced: Bool = false
+
+    var body: some View {
+        List {
+            DisclosureGroup("Rendering", isExpanded: $showRendering) {
+                LabeledContent("Frame rate", value: "120 Hz")
+                LabeledContent("Color mode", value: "Wide gamut")
+                Toggle("Show debug overlay", isOn: .constant(false))
+            }
+
+            DisclosureGroup("Input", isExpanded: $showInput) {
+                Toggle("Haptics", isOn: .constant(true))
+                Toggle("Keyboard shortcuts", isOn: .constant(true))
+            }
+
+            DisclosureGroup("Advanced", isExpanded: $showAdvanced) {
+                Text("Standalone DisclosureGroup works well for settings, inspectors, and progressive disclosure inside forms.")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct FormsRowsDemoView: View {
+    enum Theme: String, CaseIterable, Identifiable {
+        case system = "System"
+        case light = "Light"
+        case dark = "Dark"
+
+        var id: String { rawValue }
+    }
+
+    @State private var theme: Theme = .system
+    @State private var isLivePreviewEnabled: Bool = true
+    @State private var intensity: Double = 0.65
+    @State private var notes: String = ""
+
+    var body: some View {
+        Form {
+            Section("LabeledContent") {
+                LabeledContent("Build", value: "Swift OS 26")
+                LabeledContent {
+                    Text("Ready")
+                        .foregroundStyle(.green)
+                } label: {
+                    Label("Status", systemImage: "checkmark.seal")
+                }
+            }
+
+            Section("Settings Rows") {
+                Picker("Theme", selection: $theme) {
+                    ForEach(Theme.allCases) { theme in
+                        Text(theme.rawValue).tag(theme)
+                    }
+                }
+
+                Toggle("Live preview", isOn: $isLivePreviewEnabled)
+
+                LabeledContent("Intensity") {
+                    Slider(value: $intensity)
+                        .frame(maxWidth: 180)
+                }
+            }
+
+            Section("ControlGroup") {
+                ControlGroup {
+                    Button { notes.append("B") } label: { Image(systemName: "bold") }
+                    Button { notes.append("I") } label: { Image(systemName: "italic") }
+                    Button { notes.append("U") } label: { Image(systemName: "underline") }
+                }
+                .controlGroupStyle(.automatic)
+            }
+
+            Section("Notes") {
+                TextField("Inline note", text: $notes, axis: .vertical)
+                    .lineLimit(2...4)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct ScrollUXDemoView: View {
+    @State private var items: [Int] = Array(1...30)
+    @State private var latestRefresh: Date? = nil
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            List {
+                Section {
+                    Button("Scroll to bottom") {
+                        withAnimation(.snappy) {
+                            proxy.scrollTo(items.last, anchor: .bottom)
+                        }
+                    }
+                    Button("Scroll to top") {
+                        withAnimation(.snappy) {
+                            proxy.scrollTo(items.first, anchor: .top)
+                        }
+                    }
+                    if let latestRefresh {
+                        Text("Refreshed \(latestRefresh.formatted(date: .omitted, time: .standard))")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Section("Rows") {
+                    ForEach(items, id: \.self) { item in
+                        HStack {
+                            Image(systemName: "arrow.down.circle")
+                                .foregroundStyle(.blue)
+                            Text("Scrollable row \(item)")
+                            Spacer()
+                        }
+                        .id(item)
+                    }
+                }
+            }
+            .refreshable {
+                latestRefresh = Date()
+                items.shuffle()
+            }
+            .contentMargins(.top, 8, for: .scrollContent)
+            .scrollIndicators(.visible)
+        }
+        .safeAreaInset(edge: .bottom) {
+            Text("safeAreaInset keeps actions visible above the home indicator.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(.thinMaterial)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
 struct GridsDemoView: View {
     private let columns: [GridItem] = [
         GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())
@@ -99,5 +240,4 @@ struct GridsDemoView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
 

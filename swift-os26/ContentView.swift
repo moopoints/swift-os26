@@ -33,6 +33,14 @@ struct ContentView: View {
             .tabItem {
                 Label("Content", systemImage: "doc.text.image")
             }
+
+            NavigationStack {
+                AnimationsTabView()
+                    .navigationTitle("Animations")
+            }
+            .tabItem {
+                Label("Animations", systemImage: "sparkles")
+            }
         }
     }
 }

@@ -8,13 +8,22 @@ struct ContentTabView: View {
                 NavigationLink("Swipe Actions") { SwipeActionsDemoView().hidesTabBarOnPush() }
                 NavigationLink("Reordering") { ReorderingDemoView().hidesTabBarOnPush() }
                 NavigationLink("Disclosure / Outline") { DisclosureOutlineDemoView().hidesTabBarOnPush() }
+                NavigationLink("Disclosure Group") { DisclosureGroupDemoView().hidesTabBarOnPush() }
                 NavigationLink("Grids") { GridsDemoView().hidesTabBarOnPush() }
+                NavigationLink("Forms & Rows") { FormsRowsDemoView().hidesTabBarOnPush() }
+                NavigationLink("Scroll UX") { ScrollUXDemoView().hidesTabBarOnPush() }
             }
 
             Section("Media") {
+                NavigationLink("Image & AsyncImage") { ImageAsyncImageDemoView().hidesTabBarOnPush() }
                 NavigationLink("Photos Picker") { PhotosPickerDemoView().hidesTabBarOnPush() }
                 NavigationLink("VideoPlayer") { VideoPlayerDemoView().hidesTabBarOnPush() }
                 NavigationLink("SF Symbols") { SFSymbolsDemoView().hidesTabBarOnPush() }
+            }
+
+            Section("Status & Utilities") {
+                NavigationLink("Progress, Gauges & Empty States") { NativeStatusDemoView().hidesTabBarOnPush() }
+                NavigationLink("Share, Paste & Control Groups") { NativeUtilityDemoView().hidesTabBarOnPush() }
             }
 
             Section("Layout & Effects") {
@@ -37,5 +46,4 @@ struct ContentTabView: View {
         }
     }
 }
-
 
